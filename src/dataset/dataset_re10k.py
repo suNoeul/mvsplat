@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from functools import cached_property
 from io import BytesIO
 from pathlib import Path
-from typing import Literal
+from typing import Literal, List
 
 import torch
 import torchvision.transforms as tf
@@ -24,7 +24,7 @@ from .view_sampler import ViewSampler
 @dataclass
 class DatasetRE10kCfg(DatasetCfgCommon):
     name: Literal["re10k"]
-    roots: list[Path]
+    roots: List[Path]
     baseline_epsilon: float
     max_fov: float
     make_baseline_1: bool
@@ -45,7 +45,7 @@ class DatasetRE10k(IterableDataset):
     view_sampler: ViewSampler
 
     to_tensor: tf.ToTensor
-    chunks: list[Path]
+    chunks: List[Path]
     near: float = 0.1
     far: float = 1000.0
 
@@ -82,7 +82,7 @@ class DatasetRE10k(IterableDataset):
             # is not change, this should not cause any problem except for the display
             self.chunks = self.chunks[:: cfg.test_chunk_interval]
 
-    def shuffle(self, lst: list) -> list:
+    def shuffle(self, lst: List) -> List:
         indices = torch.randperm(len(lst))
         return [lst[x] for x in indices]
 
@@ -227,7 +227,7 @@ class DatasetRE10k(IterableDataset):
 
     def convert_images(
         self,
-        images: list[UInt8[Tensor, "..."]],
+        images: List[UInt8[Tensor, "..."]],
     ) -> Float[Tensor, "batch 3 height width"]:
         torch_images = []
         for image in images:

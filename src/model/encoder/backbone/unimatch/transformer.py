@@ -13,7 +13,7 @@ class TransformerLayer(nn.Module):
                  no_ffn=False,
                  ffn_dim_expansion=4,
                  ):
-        super(TransformerLayer, self).__init__()
+        super().__init__()
 
         self.dim = d_model
         self.nhead = nhead
@@ -152,7 +152,7 @@ class TransformerBlock(nn.Module):
                  nhead=1,
                  ffn_dim_expansion=4,
                  ):
-        super(TransformerBlock, self).__init__()
+        super().__init__()
 
         self.self_attn = TransformerLayer(d_model=d_model,
                                           nhead=nhead,
@@ -207,7 +207,7 @@ class FeatureTransformer(nn.Module):
                  nhead=1,
                  ffn_dim_expansion=4,
                  ):
-        super(FeatureTransformer, self).__init__()
+        super().__init__()
 
         self.d_model = d_model
         self.nhead = nhead

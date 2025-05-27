@@ -2,6 +2,7 @@ from typing import Callable, Literal, TypedDict
 
 from jaxtyping import Float, Int64
 from torch import Tensor
+from typing import List, Union
 
 Stage = Literal["train", "val", "test"]
 
@@ -25,7 +26,7 @@ class BatchedViews(TypedDict, total=False):
 class BatchedExample(TypedDict, total=False):
     target: BatchedViews
     context: BatchedViews
-    scene: list[str]
+    scene: List[str]
 
 
 class UnbatchedViews(TypedDict, total=False):
@@ -46,5 +47,5 @@ class UnbatchedExample(TypedDict, total=False):
 # A data shim modifies the example after it's been returned from the data loader.
 DataShim = Callable[[BatchedExample], BatchedExample]
 
-AnyExample = BatchedExample | UnbatchedExample
-AnyViews = BatchedViews | UnbatchedViews
+AnyExample = Union[BatchedExample, UnbatchedExample]
+AnyViews = Union[BatchedViews, UnbatchedViews]

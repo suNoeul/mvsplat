@@ -6,6 +6,7 @@ import torch
 from einops import rearrange
 from pytorch_lightning import LightningModule
 from tqdm import tqdm
+from typing import Tuple, Dict, Optional
 
 from ..geometry.epipolar_lines import project_rays
 from ..geometry.projection import get_world_rays, sample_image_grid
@@ -28,14 +29,14 @@ class EvaluationIndexGeneratorCfg:
 
 @dataclass
 class IndexEntry:
-    context: tuple[int, ...]
-    target: tuple[int, ...]
+    context: Tuple[int, ...]
+    target: Tuple[int, ...]
 
 
 class EvaluationIndexGenerator(LightningModule):
     generator: torch.Generator
     cfg: EvaluationIndexGeneratorCfg
-    index: dict[str, IndexEntry | None]
+    index: Dict[str, Optional[IndexEntry]]
 
     def __init__(self, cfg: EvaluationIndexGeneratorCfg) -> None:
         super().__init__()
@@ -109,7 +110,7 @@ class EvaluationIndexGenerator(LightningModule):
                 # Pick a random valid view. Index the resulting views.
                 num_options = len(valid_indices)
                 chosen = torch.randint(
-                    0, num_options, size=tuple(), generator=self.generator
+                    0, num_options, size=Tuple(), generator=self.generator
                 )
                 chosen, overlap_a, overlap_b = valid_indices[chosen]
 
@@ -128,7 +129,7 @@ class EvaluationIndexGenerator(LightningModule):
                     if (target_views.unique(return_counts=True)[1] == 1).all():
                         break
 
-                target = tuple(sorted(target_views.tolist()))
+                target = Tuple(sorted(target_views.tolist()))
                 self.index[scene] = IndexEntry(
                     context=(context_left, context_right),
                     target=target,

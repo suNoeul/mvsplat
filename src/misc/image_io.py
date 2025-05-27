@@ -1,6 +1,6 @@
 import io
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 import skvideo.io
 
 import numpy as np
@@ -75,7 +75,7 @@ def load_image(
 
 
 def save_video(
-    images: list[FloatImage],
+    images: List[FloatImage],
     path: Union[Path, str],
 ) -> None:
     """Save an image. Assumed to be in range 0-1."""

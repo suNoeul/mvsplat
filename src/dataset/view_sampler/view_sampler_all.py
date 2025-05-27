@@ -4,6 +4,7 @@ from typing import Literal
 import torch
 from jaxtyping import Float, Int64
 from torch import Tensor
+from typing import Tuple
 
 from .view_sampler import ViewSampler
 
@@ -20,7 +21,7 @@ class ViewSamplerAll(ViewSampler[ViewSamplerAllCfg]):
         extrinsics: Float[Tensor, "view 4 4"],
         intrinsics: Float[Tensor, "view 3 3"],
         device: torch.device = torch.device("cpu"),
-    ) -> tuple[
+    ) -> Tuple[
         Int64[Tensor, " context_view"],  # indices for context views
         Int64[Tensor, " target_view"],  # indices for target views
     ]:

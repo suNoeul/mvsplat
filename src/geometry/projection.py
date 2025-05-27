@@ -4,6 +4,7 @@ import torch
 from einops import einsum, rearrange, reduce, repeat
 from jaxtyping import Bool, Float, Int64
 from torch import Tensor
+from typing import Tuple
 
 
 def homogenize_points(
@@ -61,7 +62,7 @@ def project(
     extrinsics: Float[Tensor, "*#batch dim+1 dim+1"],
     intrinsics: Float[Tensor, "*#batch dim dim"],
     epsilon: float = torch.finfo(torch.float32).eps,
-) -> tuple[
+) -> Tuple[
     Float[Tensor, "*batch dim-1"],  # xy coordinates
     Bool[Tensor, " *batch"],  # whether points are in front of the camera
 ]:
@@ -92,7 +93,7 @@ def get_world_rays(
     coordinates: Float[Tensor, "*#batch dim"],
     extrinsics: Float[Tensor, "*#batch dim+2 dim+2"],
     intrinsics: Float[Tensor, "*#batch dim+1 dim+1"],
-) -> tuple[
+) -> Tuple[
     Float[Tensor, "*batch dim+1"],  # origins
     Float[Tensor, "*batch dim+1"],  # directions
 ]:
@@ -115,9 +116,9 @@ def get_world_rays(
 
 
 def sample_image_grid(
-    shape: tuple[int, ...],
+    shape: Tuple[int, ...],
     device: torch.device = torch.device("cpu"),
-) -> tuple[
+) -> Tuple[
     Float[Tensor, "*shape dim"],  # float coordinates (xy indexing)
     Int64[Tensor, "*shape dim"],  # integer indices (ij indexing)
 ]:
@@ -142,7 +143,7 @@ def sample_training_rays(
     intrinsics: Float[Tensor, "batch view dim dim"],
     extrinsics: Float[Tensor, "batch view dim+1 dim+1"],
     num_rays: int,
-) -> tuple[
+) -> Tuple[
     Float[Tensor, "batch ray dim"],  # origins
     Float[Tensor, "batch ray dim"],  # directions
     Float[Tensor, "batch ray 3"],  # sampled color
@@ -151,7 +152,7 @@ def sample_training_rays(
     b, v, _, *grid_shape = image.shape
 
     # Generate all possible target rays.
-    xy, _ = sample_image_grid(tuple(grid_shape), device)
+    xy, _ = sample_image_grid(Tuple(grid_shape), device)
     origins, directions = get_world_rays(
         rearrange(xy, "... d -> ... () () d"),
         extrinsics,

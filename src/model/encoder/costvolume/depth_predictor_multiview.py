@@ -146,7 +146,7 @@ class DepthPredictorMultiView(nn.Module):
         wo_cost_volume_refine=False,
         **kwargs,
     ):
-        super(DepthPredictorMultiView, self).__init__()
+        super().__init__()
         self.num_depth_candidates = num_depth_candidates
         self.regressor_feat_dim = costvolume_unet_feat_dim
         self.upscale_factor = upscale_factor

@@ -8,7 +8,7 @@
 Images are assumed to be float32 tensors with shape (channel, height, width).
 """
 
-from typing import Any, Generator, Iterable, Literal, Optional, Union
+from typing import Any, Generator, Iterable, Literal, Optional, Union, Tuple
 
 import torch
 import torch.nn.functional as F
@@ -207,7 +207,7 @@ def add_border(
 
 def resize(
     image: Float[Tensor, "channel height width"],
-    shape: Optional[tuple[int, int]] = None,
+    shape: Optional[Tuple[int, int]] = None,
     width: Optional[int] = None,
     height: Optional[int] = None,
 ) -> Float[Tensor, "channel new_height new_width"]:

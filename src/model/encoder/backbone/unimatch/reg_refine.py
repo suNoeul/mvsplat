@@ -7,7 +7,7 @@ class FlowHead(nn.Module):
     def __init__(self, input_dim=128, hidden_dim=256,
                  out_dim=2,
                  ):
-        super(FlowHead, self).__init__()
+        super().__init__()
 
         self.conv1 = nn.Conv2d(input_dim, hidden_dim, 3, padding=1)
         self.conv2 = nn.Conv2d(hidden_dim, out_dim, 3, padding=1)
@@ -25,7 +25,7 @@ class SepConvGRU(nn.Module):
                  ):
         padding = (kernel_size - 1) // 2
 
-        super(SepConvGRU, self).__init__()
+        super().__init__()
         self.convz1 = nn.Conv2d(hidden_dim + input_dim, hidden_dim, (1, kernel_size), padding=(0, padding))
         self.convr1 = nn.Conv2d(hidden_dim + input_dim, hidden_dim, (1, kernel_size), padding=(0, padding))
         self.convq1 = nn.Conv2d(hidden_dim + input_dim, hidden_dim, (1, kernel_size), padding=(0, padding))
@@ -56,7 +56,7 @@ class BasicMotionEncoder(nn.Module):
     def __init__(self, corr_channels=324,
                  flow_channels=2,
                  ):
-        super(BasicMotionEncoder, self).__init__()
+        super().__init__()
 
         self.convc1 = nn.Conv2d(corr_channels, 256, 1, padding=0)
         self.convc2 = nn.Conv2d(256, 192, 3, padding=1)
@@ -83,7 +83,7 @@ class BasicUpdateBlock(nn.Module):
                  flow_dim=2,
                  bilinear_up=False,
                  ):
-        super(BasicUpdateBlock, self).__init__()
+        super().__init__()
 
         self.encoder = BasicMotionEncoder(corr_channels=corr_channels,
                                           flow_channels=flow_dim,

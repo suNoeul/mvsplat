@@ -24,7 +24,7 @@ class UniMatch(nn.Module):
                  reg_refine=False,  # optional local regression refinement
                  task='flow',
                  ):
-        super(UniMatch, self).__init__()
+        super().__init__()
 
         self.feature_channels = feature_channels
         self.num_scales = num_scales

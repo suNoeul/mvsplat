@@ -4,6 +4,7 @@ from typing import Literal
 import torch
 from jaxtyping import Float, Int64
 from torch import Tensor
+from typing import Tuple, List, Optional
 
 from .view_sampler import ViewSampler
 
@@ -13,8 +14,8 @@ class ViewSamplerArbitraryCfg:
     name: Literal["arbitrary"]
     num_context_views: int
     num_target_views: int
-    context_views: list[int] | None
-    target_views: list[int] | None
+    context_views: Optional[List[int]]
+    target_views: Optional[List[int]]
 
 
 class ViewSamplerArbitrary(ViewSampler[ViewSamplerArbitraryCfg]):
@@ -24,7 +25,7 @@ class ViewSamplerArbitrary(ViewSampler[ViewSamplerArbitraryCfg]):
         extrinsics: Float[Tensor, "view 4 4"],
         intrinsics: Float[Tensor, "view 3 3"],
         device: torch.device = torch.device("cpu"),
-    ) -> tuple[
+    ) -> Tuple[
         Int64[Tensor, " context_view"],  # indices for context views
         Int64[Tensor, " target_view"],  # indices for target views
     ]:

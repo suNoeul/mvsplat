@@ -6,7 +6,7 @@ from .trident_conv import MultiScaleTridentConv
 class ResidualBlock(nn.Module):
     def __init__(self, in_planes, planes, norm_layer=nn.InstanceNorm2d, stride=1, dilation=1,
                  ):
-        super(ResidualBlock, self).__init__()
+        super().__init__()
 
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3,
                                dilation=dilation, padding=dilation, stride=stride, bias=False)
@@ -42,7 +42,7 @@ class CNNEncoder(nn.Module):
                  num_output_scales=1,
                  **kwargs,
                  ):
-        super(CNNEncoder, self).__init__()
+        super().__init__()
         self.num_branch = num_output_scales
 
         feature_dims = [64, 96, 128]

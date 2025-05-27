@@ -4,6 +4,7 @@ from typing import Generic, TypeVar
 import torch
 from jaxtyping import Float, Int64
 from torch import Tensor
+from typing import Optional, Tuple
 
 from ...misc.step_tracker import StepTracker
 from ..types import Stage
@@ -16,7 +17,7 @@ class ViewSampler(ABC, Generic[T]):
     stage: Stage
     is_overfitting: bool
     cameras_are_circular: bool
-    step_tracker: StepTracker | None
+    step_tracker: Optional[StepTracker]
 
     def __init__(
         self,
@@ -24,7 +25,7 @@ class ViewSampler(ABC, Generic[T]):
         stage: Stage,
         is_overfitting: bool,
         cameras_are_circular: bool,
-        step_tracker: StepTracker | None,
+        step_tracker: Optional[StepTracker],
     ) -> None:
         self.cfg = cfg
         self.stage = stage
@@ -40,7 +41,7 @@ class ViewSampler(ABC, Generic[T]):
         intrinsics: Float[Tensor, "view 3 3"],
         device: torch.device = torch.device("cpu"),
         **kwargs,
-    ) -> tuple[
+    ) -> Tuple[
         Int64[Tensor, " context_view"],  # indices for context views
         Int64[Tensor, " target_view"],  # indices for target views
     ]:

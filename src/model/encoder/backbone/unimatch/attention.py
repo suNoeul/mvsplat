@@ -172,7 +172,7 @@ class SelfAttnPropagation(nn.Module):
     def __init__(self, in_channels,
                  **kwargs,
                  ):
-        super(SelfAttnPropagation, self).__init__()
+        super().__init__()
 
         self.q_proj = nn.Linear(in_channels, in_channels)
         self.k_proj = nn.Linear(in_channels, in_channels)

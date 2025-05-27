@@ -301,7 +301,7 @@ class TransformerLayer(nn.Module):
         add_per_view_attn=False,
         **kwargs,
     ):
-        super(TransformerLayer, self).__init__()
+        super().__init__()
 
         self.dim = d_model
         self.nhead = nhead
@@ -428,7 +428,7 @@ class TransformerBlock(nn.Module):
         no_cross_attn=False,
         **kwargs,
     ):
-        super(TransformerBlock, self).__init__()
+        super().__init__()
 
         self.no_cross_attn = no_cross_attn
 
@@ -535,7 +535,7 @@ class MultiViewFeatureTransformer(nn.Module):
         no_cross_attn=False,
         **kwargs,
     ):
-        super(MultiViewFeatureTransformer, self).__init__()
+        super().__init__()
 
         self.attention_type = attention_type
 

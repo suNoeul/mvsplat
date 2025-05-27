@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 from ...misc.step_tracker import StepTracker
 from ..types import Stage
@@ -8,7 +8,7 @@ from .view_sampler_arbitrary import ViewSamplerArbitrary, ViewSamplerArbitraryCf
 from .view_sampler_bounded import ViewSamplerBounded, ViewSamplerBoundedCfg
 from .view_sampler_evaluation import ViewSamplerEvaluation, ViewSamplerEvaluationCfg
 
-VIEW_SAMPLERS: dict[str, ViewSampler[Any]] = {
+VIEW_SAMPLERS: Dict[str, ViewSampler[Any]] = {
     "all": ViewSamplerAll,
     "arbitrary": ViewSamplerArbitrary,
     "bounded": ViewSamplerBounded,

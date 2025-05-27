@@ -1,0 +1,23 @@
+beartype
+black
+colorama
+colorspacious
+dacite
+e3nn
+einops
+hydra-core
+jaxtyping
+lpips
+moviepy==1.0.3
+plyfile
+pytorch_lightning==1.7.7
+ruff
+sk-video
+svg.py
+tabulate
+timm
+wandb
+
+# torchmetrics==0.10.3
+
+

@@ -50,7 +50,7 @@ class BackboneMultiview(torch.nn.Module):
         downscale_factor=8,
         use_epipolar_trans=False,
     ):
-        super(BackboneMultiview, self).__init__()
+        super().__init__()
         self.feature_channels = feature_channels
         # Table 3: w/o cross-view attention
         self.no_cross_attn = no_cross_attn

@@ -1,12 +1,14 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Dict, Optional
 
 import torch
 from dacite import Config, from_dict
 from jaxtyping import Float, Int64
 from torch import Tensor
+from typing import Optional, Tuple
+
 
 from ...evaluation.evaluation_index_generator import IndexEntry
 from ...misc.step_tracker import StepTracker
@@ -22,7 +24,7 @@ class ViewSamplerEvaluationCfg:
 
 
 class ViewSamplerEvaluation(ViewSampler[ViewSamplerEvaluationCfg]):
-    index: dict[str, IndexEntry | None]
+    index: Dict[str, Optional[IndexEntry]]
 
     def __init__(
         self,
@@ -30,7 +32,7 @@ class ViewSamplerEvaluation(ViewSampler[ViewSamplerEvaluationCfg]):
         stage: Stage,
         is_overfitting: bool,
         cameras_are_circular: bool,
-        step_tracker: StepTracker | None,
+        step_tracker: Optional[StepTracker],
     ) -> None:
         super().__init__(cfg, stage, is_overfitting, cameras_are_circular, step_tracker)
 
@@ -47,7 +49,7 @@ class ViewSamplerEvaluation(ViewSampler[ViewSamplerEvaluationCfg]):
         extrinsics: Float[Tensor, "view 4 4"],
         intrinsics: Float[Tensor, "view 3 3"],
         device: torch.device = torch.device("cpu"),
-    ) -> tuple[
+    ) -> Tuple[
         Int64[Tensor, " context_view"],  # indices for context views
         Int64[Tensor, " target_view"],  # indices for target views
     ]:

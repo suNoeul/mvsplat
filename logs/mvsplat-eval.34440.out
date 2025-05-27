@@ -1,0 +1,47 @@
+[INFO] CUDA_VISIBLE_DEVICES=0
+[INFO] SLURM_JOB_ID: 34440
+
+A module that was compiled using NumPy 1.x cannot be run in
+NumPy 2.1.2 as it may crash. To support both 1.x and 2.x
+versions of NumPy, modules must be compiled with NumPy 2.0.
+Some module may need to rebuild instead e.g. with 'pybind11>=2.12'.
+
+If you are a user of the module, the easiest solution will be to
+downgrade to 'numpy<2' or try to upgrade the affected module.
+We expect that some modules will need time to support NumPy 2.
+
+Traceback (most recent call last):  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/rlatnsgh0708/research_project/mvsplat/src/main.py", line 6, in <module>
+    import torch
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/torch/__init__.py", line 1382, in <module>
+    from .functional import *  # noqa: F403
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/torch/functional.py", line 7, in <module>
+    import torch.nn.functional as F
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/torch/nn/__init__.py", line 1, in <module>
+    from .modules import *  # noqa: F403
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/torch/nn/modules/__init__.py", line 35, in <module>
+    from .transformer import TransformerEncoder, TransformerDecoder, \
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/torch/nn/modules/transformer.py", line 20, in <module>
+    device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/torch/nn/modules/transformer.py:20: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:84.)
+  device: torch.device = torch.device(torch._C._get_default_device()),  # torch.device('cpu'),
+Traceback (most recent call last):
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/rlatnsgh0708/research_project/mvsplat/src/main.py", line 23, in <module>
+    from src.config import load_typed_root_config
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/jaxtyping/_import_hook.py", line 230, in exec_module
+    return super().exec_module(module)
+  File "/home/rlatnsgh0708/research_project/mvsplat/src/config.py", line 12, in <module>
+    from .model.model_wrapper import OptimizerCfg, TestCfg, TrainCfg
+  File "/home/rlatnsgh0708/miniconda3/envs/mvsplat/lib/python3.10/site-packages/jaxtyping/_import_hook.py", line 230, in exec_module
+    return super().exec_module(module)
+  File "/home/rlatnsgh0708/research_project/mvsplat/src/model/model_wrapper.py", line 5, in <module>
+    import moviepy.editor as mpy
+ModuleNotFoundError: No module named 'moviepy.editor'
+=== JOB FINISHED ===
