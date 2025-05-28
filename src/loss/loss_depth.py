@@ -4,6 +4,7 @@ import torch
 from einops import reduce
 from jaxtyping import Float
 from torch import Tensor
+from typing import Optional
 
 from ..dataset.types import BatchedExample
 from ..model.decoder.decoder import DecoderOutput
@@ -14,7 +15,7 @@ from .loss import Loss
 @dataclass
 class LossDepthCfg:
     weight: float
-    sigma_image: float | None
+    sigma_image: Optional[float]
     use_second_derivative: bool
 
 
@@ -34,7 +35,7 @@ class LossDepth(Loss[LossDepthCfg, LossDepthCfgWrapper]):
         # Scale the depth between the near and far planes.
         near = batch["target"]["near"][..., None, None].log()
         far = batch["target"]["far"][..., None, None].log()
-        depth = prediction.depth.minimum(far).maximum(near)
+        depth = prediction.depth.min(far).max(near)
         depth = (depth - near) / (far - near)
 
         # Compute the difference between neighboring pixels in each direction.
@@ -52,9 +53,9 @@ class LossDepth(Loss[LossDepthCfg, LossDepthCfgWrapper]):
             color_dx = reduce(color_gt.diff(dim=-1), "b v c h w -> b v h w", "max")
             color_dy = reduce(color_gt.diff(dim=-2), "b v c h w -> b v h w", "max")
             if self.cfg.use_second_derivative:
-                color_dx = color_dx[..., :, 1:].maximum(color_dx[..., :, :-1])
-                color_dy = color_dy[..., 1:, :].maximum(color_dy[..., :-1, :])
-            depth_dx = depth_dx * torch.exp(-color_dx * self.cfg.sigma_image)
-            depth_dy = depth_dy * torch.exp(-color_dy * self.cfg.sigma_image)
+                color_dx = torch.max(color_dx[..., :, 1:], color_dx[..., :, :-1])
+                color_dy = torch.max(color_dy[..., 1:, :], color_dy[..., :-1, :])
+            depth_dx = depth_dx * torch.exp(torch.clamp(-color_dx * self.cfg.sigma_image, -10, 0))
+            depth_dy = depth_dy * torch.exp(torch.clamp(-color_dy * self.cfg.sigma_image, -10, 0))
 
         return self.cfg.weight * (depth_dx.abs().mean() + depth_dy.abs().mean())
