@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Union, Optional
 
 from ...misc.step_tracker import StepTracker
 from ..types import Stage
@@ -15,12 +15,12 @@ VIEW_SAMPLERS: Dict[str, ViewSampler[Any]] = {
     "evaluation": ViewSamplerEvaluation,
 }
 
-ViewSamplerCfg = (
-    ViewSamplerArbitraryCfg
-    | ViewSamplerBoundedCfg
-    | ViewSamplerEvaluationCfg
-    | ViewSamplerAllCfg
-)
+ViewSamplerCfg = Union[
+    ViewSamplerArbitraryCfg,
+    ViewSamplerBoundedCfg,
+    ViewSamplerEvaluationCfg,
+    ViewSamplerAllCfg
+]
 
 
 def get_view_sampler(
@@ -28,7 +28,7 @@ def get_view_sampler(
     stage: Stage,
     overfit: bool,
     cameras_are_circular: bool,
-    step_tracker: StepTracker | None,
+    step_tracker: Optional[StepTracker],
 ) -> ViewSampler[Any]:
     return VIEW_SAMPLERS[cfg.name](
         cfg,

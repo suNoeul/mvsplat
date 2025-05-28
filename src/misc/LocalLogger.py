@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, List
 
 from PIL import Image
 from pytorch_lightning.loggers.logger import Logger
@@ -35,7 +35,7 @@ class LocalLogger(Logger):
     def log_image(
         self,
         key: str,
-        images: list[Any],
+        images: List[Any],
         step: Optional[int] = None,
         **kwargs,
     ):

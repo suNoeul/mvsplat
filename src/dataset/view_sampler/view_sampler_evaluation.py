@@ -1,13 +1,12 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Dict, Optional
+from typing import Dict, Optional, Tuple
 
 import torch
 from dacite import Config, from_dict
 from jaxtyping import Float, Int64
 from torch import Tensor
-from typing import Optional, Tuple
 
 
 from ...evaluation.evaluation_index_generator import IndexEntry
@@ -18,7 +17,7 @@ from .view_sampler import ViewSampler
 
 @dataclass
 class ViewSamplerEvaluationCfg:
-    name: Literal["evaluation"]
+    name: str # Literal["evaluation"]
     index_path: Path
     num_context_views: int
 
@@ -36,7 +35,7 @@ class ViewSamplerEvaluation(ViewSampler[ViewSamplerEvaluationCfg]):
     ) -> None:
         super().__init__(cfg, stage, is_overfitting, cameras_are_circular, step_tracker)
 
-        dacite_config = Config(cast=[tuple])
+        dacite_config = Config(cast=[Tuple])
         with cfg.index_path.open("r") as f:
             self.index = {
                 k: None if v is None else from_dict(IndexEntry, v, dacite_config)

@@ -2,6 +2,7 @@ import torch
 from einops import einsum, reduce, repeat
 from jaxtyping import Float
 from torch import Tensor
+from typing import Tuple
 
 from ..types import BatchedExample
 
@@ -9,7 +10,7 @@ from ..types import BatchedExample
 def compute_depth_for_disparity(
     extrinsics: Float[Tensor, "batch view 4 4"],
     intrinsics: Float[Tensor, "batch view 3 3"],
-    image_shape: tuple[int, int],
+    image_shape: Tuple[int, int],
     disparity: float,
     delta_min: float = 1e-6,  # This prevents motionless scenes from lacking depth.
 ) -> Float[Tensor, " batch"]:

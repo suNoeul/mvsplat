@@ -1,11 +1,11 @@
-from typing import Callable, Dict, Union
+from typing import Callable, Dict, Union, List
 
 from torch import Tensor
 
 Tree = Union[Dict[str, "Tree"], Tensor]
 
 
-def collate(trees: list[Tree], merge_fn: Callable[[list[Tensor]], Tensor]) -> Tree:
+def collate(trees: List[Tree], merge_fn: Callable[[List[Tensor]], Tensor]) -> Tree:
     """Merge nested dictionaries of tensors."""
     if isinstance(trees[0], Tensor):
         return merge_fn(trees)

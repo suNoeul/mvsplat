@@ -91,7 +91,7 @@ class MetricComputer(LightningModule):
                 f"{Path.cwd()}/{self.cfg.side_by_side_path}/videos/{scene_key}.mp4"
             )
 
-    def print_preview_metrics(self, metrics: dict[str, float]) -> None:
+    def print_preview_metrics(self, metrics):
         if getattr(self, "running_metrics", None) is None:
             self.running_metrics = metrics
             self.running_metric_steps = 1

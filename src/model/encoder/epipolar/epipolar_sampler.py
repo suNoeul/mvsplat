@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from einops import rearrange, repeat
 from jaxtyping import Bool, Float, Shaped
 from torch import Tensor, nn
+from typing import Tuple
 
 from ....geometry.epipolar_lines import project_rays
 from ....geometry.projection import get_world_rays, sample_image_grid
@@ -128,7 +129,7 @@ class EpipolarSampler(nn.Module):
         images: Float[Tensor, "batch view channel height width"],
         extrinsics: Float[Tensor, "batch view 4 4"],
         intrinsics: Float[Tensor, "batch view 3 3"],
-    ) -> tuple[
+    ) -> Tuple[
         Float[Tensor, "batch view ray 2"],  # xy
         Float[Tensor, "batch view ray 3"],  # origins
         Float[Tensor, "batch view ray 3"],  # directions

@@ -1,5 +1,6 @@
 from jaxtyping import Float, Int64, Shaped
 from torch import Tensor, nn
+from typing import Tuple
 
 from ....misc.discrete_probability_distribution import (
     gather_discrete_topk,
@@ -13,7 +14,7 @@ class Sampler(nn.Module):
         probabilities: Float[Tensor, "*batch bucket"],
         num_samples: int,
         deterministic: bool,
-    ) -> tuple[
+    ) -> Tuple[
         Int64[Tensor, "*batch 1"],  # index
         Float[Tensor, "*batch 1"],  # probability density
     ]:

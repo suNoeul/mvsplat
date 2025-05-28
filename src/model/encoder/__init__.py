@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from .encoder import Encoder
 from .encoder_costvolume import EncoderCostVolume, EncoderCostVolumeCfg
@@ -12,7 +12,7 @@ ENCODERS = {
 EncoderCfg = EncoderCostVolumeCfg
 
 
-def get_encoder(cfg: EncoderCfg) -> tuple[Encoder, Optional[EncoderVisualizer]]:
+def get_encoder(cfg: EncoderCfg) -> Tuple[Encoder, Optional[EncoderVisualizer]]:
     encoder, visualizer = ENCODERS[cfg.name]
     encoder = encoder(cfg)
     if visualizer is not None:

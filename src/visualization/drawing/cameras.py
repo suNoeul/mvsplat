@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 import torch
 from einops import einsum, rearrange, repeat
@@ -125,7 +125,7 @@ def compute_aabb(
     intrinsics: Float[Tensor, "batch 3 3"],
     near: Optional[Scalar] = None,
     far: Optional[Scalar] = None,
-) -> tuple[
+) -> Tuple[
     Float[Tensor, "3"],  # minima of the scene
     Float[Tensor, "3"],  # maxima of the scene
 ]:
@@ -154,7 +154,7 @@ def compute_equal_aabb_with_margin(
     minima: Float[Tensor, "*#batch 3"],
     maxima: Float[Tensor, "*#batch 3"],
     margin: float = 0.1,
-) -> tuple[
+) -> Tuple[
     Float[Tensor, "*batch 3"],  # minima of the scene
     Float[Tensor, "*batch 3"],  # maxima of the scene
 ]:

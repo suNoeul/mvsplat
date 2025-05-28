@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from functools import cached_property
 from io import BytesIO
 from pathlib import Path
-from typing import Literal, List
+from typing import List, Tuple, Dict
 
 import torch
 import torchvision.transforms as tf
@@ -23,7 +23,7 @@ from .view_sampler import ViewSampler
 
 @dataclass
 class DatasetRE10kCfg(DatasetCfgCommon):
-    name: Literal["re10k"]
+    name: str # Literal["re10k"]
     roots: List[Path]
     baseline_epsilon: float
     max_fov: float
@@ -205,7 +205,7 @@ class DatasetRE10k(IterableDataset):
     def convert_poses(
         self,
         poses: Float[Tensor, "batch 18"],
-    ) -> tuple[
+    ) -> Tuple[
         Float[Tensor, "batch 4 4"],  # extrinsics
         Float[Tensor, "batch 3 3"],  # intrinsics
     ]:
@@ -237,7 +237,7 @@ class DatasetRE10k(IterableDataset):
 
     def get_bound(
         self,
-        bound: Literal["near", "far"],
+        bound: str, # Literal["near", "far"]
         num_views: int,
     ) -> Float[Tensor, " view"]:
         value = torch.tensor(getattr(self, bound), dtype=torch.float32)
@@ -252,7 +252,7 @@ class DatasetRE10k(IterableDataset):
         return self.stage
 
     @cached_property
-    def index(self) -> dict[str, Path]:
+    def index(self) -> Dict[str, Path]:
         merged_index = {}
         data_stages = [self.data_stage]
         if self.cfg.overfit_to_scene is not None:

@@ -1,4 +1,5 @@
 from PIL import ImageColor
+from typing import Tuple
 
 # https://sashamaps.net/docs/resources/20-colors/
 DISTINCT_COLORS = [
@@ -27,6 +28,6 @@ DISTINCT_COLORS = [
 ]
 
 
-def get_distinct_color(index: int) -> tuple[float, float, float]:
+def get_distinct_color(index: int) -> Tuple[float, float, float]:
     hex = DISTINCT_COLORS[index % len(DISTINCT_COLORS)]
     return tuple(x / 255 for x in ImageColor.getcolor(hex, "RGB"))

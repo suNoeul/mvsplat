@@ -1,17 +1,16 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Tuple, List, Optional
 
 import torch
 from jaxtyping import Float, Int64
 from torch import Tensor
-from typing import Tuple, List, Optional
 
 from .view_sampler import ViewSampler
 
 
 @dataclass
 class ViewSamplerArbitraryCfg:
-    name: Literal["arbitrary"]
+    name: str
     num_context_views: int
     num_target_views: int
     context_views: Optional[List[int]]

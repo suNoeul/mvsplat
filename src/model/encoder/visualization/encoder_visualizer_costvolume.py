@@ -1,6 +1,6 @@
 from pathlib import Path
 from random import randrange
-from typing import Optional
+from typing import Optional, Dict
 
 import numpy as np
 import torch
@@ -37,7 +37,7 @@ class EncoderVisualizerCostVolume(
         self,
         context: BatchedViews,
         global_step: int,
-    ) -> dict[str, Float[Tensor, "3 _ _"]]:
+    ) -> Dict[str, Float[Tensor, "3 _ _"]]:
         # Short-circuit execution when using mvsplat.
         return {}
 

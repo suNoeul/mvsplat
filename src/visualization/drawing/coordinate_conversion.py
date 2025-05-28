@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, runtime_checkable
+from typing import Optional, Protocol, runtime_checkable, Tuple
 
 import torch
 from jaxtyping import Float
@@ -17,11 +17,11 @@ class ConversionFunction(Protocol):
 
 
 def generate_conversions(
-    shape: tuple[int, int],
+    shape: Tuple[int, int],
     device: torch.device,
     x_range: Optional[Pair] = None,
     y_range: Optional[Pair] = None,
-) -> tuple[
+) -> Tuple[
     ConversionFunction,  # conversion from world coordinates to pixel coordinates
     ConversionFunction,  # conversion from pixel coordinates to world coordinates
 ]:

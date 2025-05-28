@@ -4,13 +4,14 @@ from einops import rearrange
 from jaxtyping import Float
 from PIL import Image
 from torch import Tensor
+from typing import Tuple
 
 from ..types import AnyExample, AnyViews
 
 
 def rescale(
     image: Float[Tensor, "3 h_in w_in"],
-    shape: tuple[int, int],
+    shape: Tuple[int, int],
 ) -> Float[Tensor, "3 h_out w_out"]:
     h, w = shape
     image_new = (image * 255).clip(min=0, max=255).type(torch.uint8)
@@ -25,8 +26,8 @@ def rescale(
 def center_crop(
     images: Float[Tensor, "*#batch c h w"],
     intrinsics: Float[Tensor, "*#batch 3 3"],
-    shape: tuple[int, int],
-) -> tuple[
+    shape: Tuple[int, int],
+) -> Tuple[
     Float[Tensor, "*#batch c h_out w_out"],  # updated images
     Float[Tensor, "*#batch 3 3"],  # updated intrinsics
 ]:
@@ -51,8 +52,8 @@ def center_crop(
 def rescale_and_crop(
     images: Float[Tensor, "*#batch c h w"],
     intrinsics: Float[Tensor, "*#batch 3 3"],
-    shape: tuple[int, int],
-) -> tuple[
+    shape: Tuple[int, int],
+) -> Tuple[
     Float[Tensor, "*#batch c h_out w_out"],  # updated images
     Float[Tensor, "*#batch 3 3"],  # updated intrinsics
 ]:
@@ -75,7 +76,7 @@ def rescale_and_crop(
     return center_crop(images, intrinsics, shape)
 
 
-def apply_crop_shim_to_views(views: AnyViews, shape: tuple[int, int]) -> AnyViews:
+def apply_crop_shim_to_views(views: AnyViews, shape: Tuple[int, int]) -> AnyViews:
     images, intrinsics = rescale_and_crop(views["image"], views["intrinsics"], shape)
     return {
         **views,
@@ -84,7 +85,7 @@ def apply_crop_shim_to_views(views: AnyViews, shape: tuple[int, int]) -> AnyView
     }
 
 
-def apply_crop_shim(example: AnyExample, shape: tuple[int, int]) -> AnyExample:
+def apply_crop_shim(example: AnyExample, shape: Tuple[int, int]) -> AnyExample:
     """Crop images in the example."""
     return {
         **example,

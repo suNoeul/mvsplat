@@ -105,11 +105,11 @@ def train(cfg_dict: DictConfig):
 
     trainer = Trainer(
         max_epochs=-1,
-        accelerator="gpu",
+        accelerator="cuda",
         logger=logger,
-        devices="auto",
+        devices=torch.cuda.device_count(),
         num_nodes=cfg.trainer.num_nodes,
-        strategy="ddp" if torch.cuda.device_count() > 1 else "auto",
+        strategy="ddp" if torch.cuda.device_count() > 1 else None,
         callbacks=callbacks,
         val_check_interval=cfg.trainer.val_check_interval,
         enable_progress_bar=cfg.mode == "test",

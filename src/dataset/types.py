@@ -1,10 +1,9 @@
-from typing import Callable, Literal, TypedDict
+from typing import Callable, TypedDict, List, Union
 
 from jaxtyping import Float, Int64
 from torch import Tensor
-from typing import List, Union
 
-Stage = Literal["train", "val", "test"]
+Stage = str
 
 
 # The following types mainly exist to make type-hinted keys show up in VS Code. Some

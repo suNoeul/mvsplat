@@ -2,13 +2,15 @@ import torch
 from einops import reduce
 from jaxtyping import Float, Int64
 from torch import Tensor
+from typing import Tuple
+
 
 
 def sample_discrete_distribution(
     pdf: Float[Tensor, "*batch bucket"],
     num_samples: int,
     eps: float = torch.finfo(torch.float32).eps,
-) -> tuple[
+) -> Tuple[
     Int64[Tensor, "*batch sample"],  # index
     Float[Tensor, "*batch sample"],  # probability density
 ]:
@@ -24,7 +26,7 @@ def gather_discrete_topk(
     pdf: Float[Tensor, "*batch bucket"],
     num_samples: int,
     eps: float = torch.finfo(torch.float32).eps,
-) -> tuple[
+) -> Tuple[
     Int64[Tensor, "*batch sample"],  # index
     Float[Tensor, "*batch sample"],  # probability density
 ]:

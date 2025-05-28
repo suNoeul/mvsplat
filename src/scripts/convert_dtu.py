@@ -4,7 +4,7 @@
 
 import subprocess
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import TypedDict, Dict, List
 
 import numpy as np
 import torch
@@ -70,7 +70,7 @@ def read_cam_file(filename):
     return intrinsic, extrinsic, near_far
 
 
-def get_example_keys(stage: Literal["test", "train"]) -> list[str]:
+def get_example_keys(stage: str) -> List[str]: # stage : Literal["test", "train"]
     """ Extracted from: https://github.com/donydchen/matchnerf/blob/main/configs/dtu_meta/val_all.txt """
     keys = [
         "scan1_train",
@@ -103,7 +103,7 @@ def load_raw(path: Path) -> UInt8[Tensor, " length"]:
     return torch.tensor(np.memmap(path, dtype="uint8", mode="r"))
 
 
-def load_images(example_path: Path) -> dict[int, UInt8[Tensor, "..."]]:
+def load_images(example_path: Path) -> Dict[int, UInt8[Tensor, "..."]]:
     """Load JPG images as raw bytes (do not decode)."""
     images_dict = {}
     for cur_id in range(1, 50):
@@ -122,7 +122,7 @@ class Metadata(TypedDict):
 
 class Example(Metadata):
     key: str
-    images: list[UInt8[Tensor, "..."]]
+    images: List[UInt8[Tensor, "..."]]
 
 
 def load_metadata(intrinsics, world2cams) -> Metadata:
@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
         chunk_size = 0
         chunk_index = 0
-        chunk: list[Example] = []
+        chunk: List[Example] = []
 
         def save_chunk():
             global chunk_size

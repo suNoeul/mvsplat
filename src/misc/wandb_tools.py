@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import wandb
+from typing import Dict, Optional
 
 
 def version_to_int(artifact) -> int:
@@ -11,7 +12,7 @@ def version_to_int(artifact) -> int:
 def download_checkpoint(
     run_id: str,
     download_dir: Path,
-    version: str | None,
+    version: Optional[str],
 ) -> Path:
     api = wandb.Api()
     run = api.run(run_id)
@@ -39,7 +40,7 @@ def download_checkpoint(
     return root / "model.ckpt"
 
 
-def update_checkpoint_path(path: str | None, wandb_cfg: dict) -> Path | None:
+def update_checkpoint_path(path: Optional[str], wandb_cfg: Dict) -> Optional[Path]:
     if path is None:
         return None
 

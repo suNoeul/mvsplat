@@ -8,15 +8,15 @@
 Images are assumed to be float32 tensors with shape (channel, height, width).
 """
 
-from typing import Any, Generator, Iterable, Literal, Optional, Union, Tuple
+from typing import Any, Generator, Iterable, Optional, Union, Tuple
 
 import torch
 import torch.nn.functional as F
 from jaxtyping import Float
 from torch import Tensor
 
-Alignment = Literal["start", "center", "end"]
-Axis = Literal["horizontal", "vertical"]
+Alignment = str #  Literal["start", "center", "end"]
+Axis = str # Literal["horizontal", "vertical"]
 Color = Union[
     int,
     float,
@@ -28,7 +28,7 @@ Color = Union[
 
 
 def _sanitize_color(color: Color) -> Float[Tensor, "#channel"]:
-    # Convert tensor to list (or individual item).
+    # Convert tensor to List (or individual item).
     if isinstance(color, torch.Tensor):
         color = color.tolist()
 
@@ -148,7 +148,7 @@ def cat(
 
 def hcat(
     *images: Iterable[Float[Tensor, "channel _ _"]],
-    align: Literal["start", "center", "end", "top", "bottom"] = "start",
+    align: str, # Literal["start", "center", "end", "top", "bottom"] = "start",
     gap: int = 8,
     gap_color: Color = 1,
 ):
@@ -170,7 +170,7 @@ def hcat(
 
 def vcat(
     *images: Iterable[Float[Tensor, "channel _ _"]],
-    align: Literal["start", "center", "end", "left", "right"] = "start",
+    align: str, # Literal["start", "center", "end", "left", "right"] = "start",
     gap: int = 8,
     gap_color: Color = 1,
 ):

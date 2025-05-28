@@ -7,9 +7,10 @@ from jaxtyping import Float
 from plyfile import PlyData, PlyElement
 from scipy.spatial.transform import Rotation as R
 from torch import Tensor
+from typing import List, Tuple
 
 
-def construct_list_of_attributes(num_rest: int) -> list[str]:
+def construct_list_of_attributes(num_rest: int) -> List[str]:
     attributes = ["x", "y", "z", "nx", "ny", "nz"]
     for i in range(3):
         attributes.append(f"f_dc_{i}")

@@ -1,5 +1,5 @@
 from math import isqrt
-from typing import Literal
+from typing import Dict, Tuple, Optional
 
 import torch
 from diff_gaussian_rasterization import (
@@ -49,7 +49,7 @@ def render_cuda(
     intrinsics: Float[Tensor, "batch 3 3"],
     near: Float[Tensor, " batch"],
     far: Float[Tensor, " batch"],
-    image_shape: tuple[int, int],
+    image_shape: Tuple[int, int],
     background_color: Float[Tensor, "batch 3"],
     gaussian_means: Float[Tensor, "batch gaussian 3"],
     gaussian_covariances: Float[Tensor, "batch gaussian 3 3"],
@@ -133,7 +133,7 @@ def render_cuda_orthographic(
     height: Float[Tensor, " batch"],
     near: Float[Tensor, " batch"],
     far: Float[Tensor, " batch"],
-    image_shape: tuple[int, int],
+    image_shape: Tuple[int, int],
     background_color: Float[Tensor, "batch 3"],
     gaussian_means: Float[Tensor, "batch gaussian 3"],
     gaussian_covariances: Float[Tensor, "batch gaussian 3 3"],
@@ -141,7 +141,7 @@ def render_cuda_orthographic(
     gaussian_opacities: Float[Tensor, "batch gaussian"],
     fov_degrees: float = 0.1,
     use_sh: bool = True,
-    dump: dict | None = None,
+    dump: Optional[Dict] = None,
 ) -> Float[Tensor, "batch 3 height width"]:
     b, _, _ = extrinsics.shape
     h, w = image_shape
@@ -220,7 +220,7 @@ def render_cuda_orthographic(
     return torch.stack(all_images)
 
 
-DepthRenderingMode = Literal["depth", "disparity", "relative_disparity", "log"]
+DepthRenderingMode = str
 
 
 def render_depth_cuda(
@@ -228,7 +228,7 @@ def render_depth_cuda(
     intrinsics: Float[Tensor, "batch 3 3"],
     near: Float[Tensor, " batch"],
     far: Float[Tensor, " batch"],
-    image_shape: tuple[int, int],
+    image_shape: Tuple[int, int],
     gaussian_means: Float[Tensor, "batch gaussian 3"],
     gaussian_covariances: Float[Tensor, "batch gaussian 3 3"],
     gaussian_opacities: Float[Tensor, "batch gaussian"],

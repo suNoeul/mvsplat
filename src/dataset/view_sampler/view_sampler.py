@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Tuple, Optional
 
 import torch
 from jaxtyping import Float, Int64
 from torch import Tensor
-from typing import Optional, Tuple
 
 from ...misc.step_tracker import StepTracker
 from ..types import Stage

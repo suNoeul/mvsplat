@@ -1,17 +1,16 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Tuple
 
 import torch
 from jaxtyping import Float, Int64
 from torch import Tensor
-from typing import Tuple
 
 from .view_sampler import ViewSampler
 
 
 @dataclass
 class ViewSamplerAllCfg:
-    name: Literal["all"]
+    name: str # Literal["all"]
 
 
 class ViewSamplerAll(ViewSampler[ViewSamplerAllCfg]):

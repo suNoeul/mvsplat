@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Generic, Literal, TypeVar
+from typing import Generic, TypeVar, Tuple, Optional
 
 from jaxtyping import Float
 from torch import Tensor, nn
@@ -8,18 +8,18 @@ from torch import Tensor, nn
 from ...dataset import DatasetCfg
 from ..types import Gaussians
 
-DepthRenderingMode = Literal[
-    "depth",
-    "log",
-    "disparity",
-    "relative_disparity",
-]
+DepthRenderingMode = str # Literal[
+#     "depth",
+#     "log",
+#     "disparity",
+#     "relative_disparity",
+# ]
 
 
 @dataclass
 class DecoderOutput:
     color: Float[Tensor, "batch view 3 height width"]
-    depth: Float[Tensor, "batch view height width"] | None
+    depth: Optional[Float[Tensor, "batch view height width"]]
 
 
 T = TypeVar("T")
@@ -42,7 +42,7 @@ class Decoder(nn.Module, ABC, Generic[T]):
         intrinsics: Float[Tensor, "batch view 3 3"],
         near: Float[Tensor, "batch view"],
         far: Float[Tensor, "batch view"],
-        image_shape: tuple[int, int],
-        depth_mode: DepthRenderingMode | None = None,
+        image_shape: Tuple[int, int],
+        depth_mode: Optional[DepthRenderingMode] = None,
     ) -> DecoderOutput:
         pass

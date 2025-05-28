@@ -1,6 +1,6 @@
 import random
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional, List
 
 import numpy as np
 import torch
@@ -20,7 +20,7 @@ def get_data_shim(encoder: nn.Module) -> DataShim:
     because the modification depends on something outside the data loader.
     """
 
-    shims: list[DataShim] = []
+    shims: List[DataShim] = []
     if hasattr(encoder, "get_data_shim"):
         shims.append(encoder.get_data_shim())
 
@@ -37,7 +37,7 @@ class DataLoaderStageCfg:
     batch_size: int
     num_workers: int
     persistent_workers: bool
-    seed: int | None
+    seed: Optional[int]
 
 
 @dataclass
@@ -58,7 +58,7 @@ def worker_init_fn(worker_id: int) -> None:
 class DataModule(LightningDataModule):
     dataset_cfg: DatasetCfg
     data_loader_cfg: DataLoaderCfg
-    step_tracker: StepTracker | None
+    step_tracker: Optional[StepTracker]
     dataset_shim: DatasetShim
     global_rank: int
 
@@ -66,7 +66,7 @@ class DataModule(LightningDataModule):
         self,
         dataset_cfg: DatasetCfg,
         data_loader_cfg: DataLoaderCfg,
-        step_tracker: StepTracker | None = None,
+        step_tracker: Optional[StepTracker] = None,
         dataset_shim: DatasetShim = lambda dataset, _: dataset,
         global_rank: int = 0,
     ) -> None:
@@ -77,10 +77,10 @@ class DataModule(LightningDataModule):
         self.dataset_shim = dataset_shim
         self.global_rank = global_rank
 
-    def get_persistent(self, loader_cfg: DataLoaderStageCfg) -> bool | None:
+    def get_persistent(self, loader_cfg: DataLoaderStageCfg) -> Optional[bool]:
         return None if loader_cfg.num_workers == 0 else loader_cfg.persistent_workers
 
-    def get_generator(self, loader_cfg: DataLoaderStageCfg) -> torch.Generator | None:
+    def get_generator(self, loader_cfg: DataLoaderStageCfg) -> Optional[torch.Generator]:
         if loader_cfg.seed is None:
             return None
         generator = Generator()

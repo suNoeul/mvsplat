@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Protocol, runtime_checkable
+from typing import Optional, Protocol, runtime_checkable, List, Tuple
 
 import moviepy.editor as mpy
 import torch
@@ -60,7 +60,7 @@ class TestCfg:
 
 @dataclass
 class TrainCfg:
-    depth_mode: DepthRenderingMode | None
+    depth_mode: Optional[DepthRenderingMode]
     extended_visualization: bool
     print_log_every_n_steps: int
 
@@ -70,7 +70,7 @@ class TrajectoryFn(Protocol):
     def __call__(
         self,
         t: Float[Tensor, " t"],
-    ) -> tuple[
+    ) -> Tuple[
         Float[Tensor, "batch view 4 4"],  # extrinsics
         Float[Tensor, "batch view 3 3"],  # intrinsics
     ]:
@@ -86,7 +86,7 @@ class ModelWrapper(LightningModule):
     optimizer_cfg: OptimizerCfg
     test_cfg: TestCfg
     train_cfg: TrainCfg
-    step_tracker: StepTracker | None
+    step_tracker: Optional[StepTracker]
 
     def __init__(
         self,
@@ -96,8 +96,8 @@ class ModelWrapper(LightningModule):
         encoder: Encoder,
         encoder_visualizer: Optional[EncoderVisualizer],
         decoder: Decoder,
-        losses: list[Loss],
-        step_tracker: StepTracker | None,
+        losses: List[Loss],
+        step_tracker:  Optional[StepTracker],
     ) -> None:
         super().__init__()
         self.optimizer_cfg = optimizer_cfg
@@ -530,7 +530,7 @@ class ModelWrapper(LightningModule):
             assert isinstance(self.logger, LocalLogger)
             for key, value in visualizations.items():
                 tensor = value._prepare_video(value.data)
-                clip = mpy.ImageSequenceClip(list(tensor), fps=value._fps)
+                clip = mpy.ImageSequenceClip(List(tensor), fps=value._fps)
                 dir = LOG_PATH / key
                 dir.mkdir(exist_ok=True, parents=True)
                 clip.write_videofile(

@@ -1,6 +1,7 @@
 import torch
 from jaxtyping import Float
 from torch import Tensor
+from typing import Optional
 
 from ..types import AnyExample, AnyViews
 
@@ -23,7 +24,7 @@ def reflect_views(views: AnyViews) -> AnyViews:
 
 def apply_augmentation_shim(
     example: AnyExample,
-    generator: torch.Generator | None = None,
+    generator: Optional[torch.Generator] = None,
 ) -> AnyExample:
     """Randomly augment the training images."""
     # Do not augment with 50% chance.

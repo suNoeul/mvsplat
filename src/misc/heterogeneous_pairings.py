@@ -2,6 +2,7 @@ import torch
 from einops import repeat
 from jaxtyping import Int
 from torch import Tensor
+from typing import Tuple
 
 Index = Int[Tensor, "n n-1"]
 
@@ -9,7 +10,7 @@ Index = Int[Tensor, "n n-1"]
 def generate_heterogeneous_index(
     n: int,
     device: torch.device = torch.device("cpu"),
-) -> tuple[Index, Index]:
+) -> Tuple[Index, Index]:
     """Generate indices for all pairs except self-pairs."""
     arange = torch.arange(n, device=device)
 
@@ -27,7 +28,7 @@ def generate_heterogeneous_index(
 def generate_heterogeneous_index_transpose(
     n: int,
     device: torch.device = torch.device("cpu"),
-) -> tuple[Index, Index]:
+) -> Tuple[Index, Index]:
     """Generate an index that can be used to "transpose" the heterogeneous index.
     Applying the index a second time inverts the "transpose."
     """

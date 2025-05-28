@@ -1,6 +1,7 @@
 import torch
 from jaxtyping import Float, Shaped
 from torch import Tensor
+from typing import Dict, List
 
 from ..model.decoder.cuda_splatting import render_cuda_orthographic
 from ..model.types import Gaussians
@@ -9,7 +10,7 @@ from ..visualization.drawing.cameras import draw_cameras
 from .drawing.cameras import compute_equal_aabb_with_margin
 
 
-def pad(images: list[Shaped[Tensor, "..."]]) -> list[Shaped[Tensor, "..."]]:
+def pad(images: List[Shaped[Tensor, "..."]]) -> List[Shaped[Tensor, "..."]]:
     shapes = torch.stack([torch.tensor(x.shape) for x in images])
     padded_shape = shapes.max(dim=0)[0]
     results = [
@@ -90,7 +91,7 @@ def render_projections(
     return torch.stack(pad(projections), dim=1)
 
 
-def render_cameras(batch: dict, resolution: int) -> Float[Tensor, "3 3 height width"]:
+def render_cameras(batch: Dict, resolution: int) -> Float[Tensor, "3 3 height width"]:
     # Define colors for context and target views.
     num_context_views = batch["context"]["extrinsics"].shape[1]
     num_target_views = batch["target"]["extrinsics"].shape[1]

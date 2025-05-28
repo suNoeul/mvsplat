@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal, Optional, List
+from typing import Optional, List, Dict
 
 import torch
 from einops import rearrange
@@ -35,7 +35,7 @@ class OpacityMappingCfg:
 
 @dataclass
 class EncoderCostVolumeCfg:
-    name: Literal["costvolume"]
+    name: str # Literal["costvolume"]
     d_feature: int
     num_depth_candidates: int
     num_surfaces: int
@@ -43,7 +43,7 @@ class EncoderCostVolumeCfg:
     gaussian_adapter: GaussianAdapterCfg
     opacity_mapping: OpacityMappingCfg
     gaussians_per_pixel: int
-    unimatch_weights_path: str | None
+    unimatch_weights_path: Optional[str]
     downscale_factor: int
     shim_patch_size: int
     multiview_trans_attn_split: int
@@ -141,11 +141,11 @@ class EncoderCostVolume(Encoder[EncoderCostVolumeCfg]):
 
     def forward(
         self,
-        context: dict,
+        context: Dict,
         global_step: int,
         deterministic: bool = False,
-        visualization_dump: Optional[dict] = None,
-        scene_names: Optional[list] = None,
+        visualization_dump: Optional[Dict] = None,
+        scene_names: Optional[List] = None,
     ) -> Gaussians:
         device = context["image"].device
         b, v, _, h, w = context["image"].shape

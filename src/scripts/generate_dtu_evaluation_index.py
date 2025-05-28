@@ -10,12 +10,13 @@ from dataclasses import asdict, dataclass
 import json
 from tqdm import tqdm
 import numpy as np
+from typing import Tuple
 
 
 @dataclass
 class IndexEntry:
-    context: tuple[int, ...]
-    target: tuple[int, ...]
+    context: Tuple[int, ...]
+    target: Tuple[int, ...]
 
 
 def sorted_test_src_views_fixed(cam2worlds_dict, test_views, train_views):

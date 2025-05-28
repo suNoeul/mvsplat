@@ -1,5 +1,5 @@
 import itertools
-from typing import Iterable, Literal, Optional, TypedDict
+from typing import Iterable, Optional, TypedDict
 
 import torch
 from einops import einsum, repeat
@@ -56,7 +56,7 @@ def _intersect_image_coordinate(
     intrinsics: Float[Tensor, "*#batch 3 3"],
     origins: Float[Tensor, "*#batch 3"],
     directions: Float[Tensor, "*#batch 3"],
-    dimension: Literal["x", "y"],
+    dimension: str,
     coordinate_value: float,
 ) -> PointProjection:
     """Compute the intersection of the projection of a camera-space ray with a line
@@ -106,8 +106,9 @@ def _intersect_image_coordinate(
 
 def _compare_projections(
     intersections: Iterable[PointProjection],
-    reduction: Literal["min", "max"],
+    reduction: str,  # "min" 또는 "max"
 ) -> PointProjection:
+    assert reduction in ["min", "max"], "reduction은 'min' 또는 'max'이어야 합니다."
     intersections = {k: v.clone() for k, v in default_collate(intersections).items()}
     t = intersections["t"]
     xy = intersections["xy"]

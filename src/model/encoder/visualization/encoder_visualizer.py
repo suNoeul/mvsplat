@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Dict
 
 from jaxtyping import Float
 from torch import Tensor
@@ -19,7 +19,7 @@ class EncoderVisualizer(ABC, Generic[T_cfg, T_encoder]):
     @abstractmethod
     def visualize(
         self,
-        context: dict,
+        context: Dict,
         global_step: int,
-    ) -> dict[str, Float[Tensor, "3 _ _"]]:
+    ) -> Dict[str, Float[Tensor, "3 _ _"]]:
         pass

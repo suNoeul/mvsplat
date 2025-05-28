@@ -4,6 +4,7 @@ import torch
 from einops import einsum, rearrange
 from jaxtyping import Float
 from torch import Tensor, nn
+from typing import Tuple
 
 from ....geometry.projection import get_world_rays
 from ....misc.sh_rotation import rotate_sh
@@ -53,7 +54,7 @@ class GaussianAdapter(nn.Module):
         depths: Float[Tensor, "*#batch"],
         opacities: Float[Tensor, "*#batch"],
         raw_gaussians: Float[Tensor, "*#batch _"],
-        image_shape: tuple[int, int],
+        image_shape: Tuple[int, int],
         eps: float = 1e-8,
     ) -> Gaussians:
         device = extrinsics.device

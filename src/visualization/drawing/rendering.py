@@ -1,4 +1,4 @@
-from typing import Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable, Tuple
 
 import torch
 from einops import rearrange, reduce
@@ -16,7 +16,7 @@ class ColorFunction(Protocol):
 
 
 def generate_sample_grid(
-    shape: tuple[int, int],
+    shape: Tuple[int, int],
     device: torch.device,
 ) -> Float[Tensor, "height width 2"]:
     h, w = shape
@@ -116,7 +116,7 @@ def run_msaa_pass(
 
 @torch.no_grad()
 def render(
-    shape: tuple[int, int],
+    shape: Tuple[int, int],
     color_function: ColorFunction,
     device: torch.device,
     subdivision: int = 8,

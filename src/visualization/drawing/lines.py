@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Optional
 
 import torch
 from einops import einsum, repeat
@@ -16,7 +16,7 @@ def draw_lines(
     end: Vector,
     color: Vector,
     width: Scalar,
-    cap: Literal["butt", "round", "square"] = "round",
+    cap: str = "round",
     num_msaa_passes: int = 1,
     x_range: Optional[Pair] = None,
     y_range: Optional[Pair] = None,

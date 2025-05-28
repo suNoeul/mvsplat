@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Tuple, Optional
 
 import torch
 from einops import rearrange, repeat
@@ -14,7 +14,7 @@ from .decoder import Decoder, DecoderOutput
 
 @dataclass
 class DecoderSplattingCUDACfg:
-    name: Literal["splatting_cuda"]
+    name: str # Literal["splatting_cuda"]
 
 
 class DecoderSplattingCUDA(Decoder[DecoderSplattingCUDACfg]):
@@ -39,8 +39,8 @@ class DecoderSplattingCUDA(Decoder[DecoderSplattingCUDACfg]):
         intrinsics: Float[Tensor, "batch view 3 3"],
         near: Float[Tensor, "batch view"],
         far: Float[Tensor, "batch view"],
-        image_shape: tuple[int, int],
-        depth_mode: DepthRenderingMode | None = None,
+        image_shape: Tuple[int, int],
+        depth_mode: Optional[DepthRenderingMode] = None,
     ) -> DecoderOutput:
         b, v, _, _ = extrinsics.shape
         color = render_cuda(
@@ -73,7 +73,7 @@ class DecoderSplattingCUDA(Decoder[DecoderSplattingCUDACfg]):
         intrinsics: Float[Tensor, "batch view 3 3"],
         near: Float[Tensor, "batch view"],
         far: Float[Tensor, "batch view"],
-        image_shape: tuple[int, int],
+        image_shape: Tuple[int, int],
         mode: DepthRenderingMode = "depth",
     ) -> Float[Tensor, "batch view height width"]:
         b, v, _, _ = extrinsics.shape
