@@ -39,14 +39,26 @@ https://github.com/donydchen/mvsplat/assets/5866866/c5dc5de1-819e-462f-85a2-815e
 
 ## Installation
 
+```bash
+# Check resource
+sinfo -p titanxp
+
+# GPU allocation in CSE-Cluster
+salloc -N 1 -n 1 --gres=gpu:1 --nodelist=n1 
+srun --pty bash
+
+docker exec -it 3dgs zsh
+source ./dotfiles/.zshrc
+```
 To get started, clone this project, create a conda virtual environment using Python 3.10+, and install the requirements:
 
 ```bash
-git clone https://github.com/donydchen/mvsplat.git
+git clone https://github.com/suNoeul/mvsplat.git
 cd mvsplat
 conda create -n mvsplat python=3.10
 conda activate mvsplat
 pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118
+# **Check** : moviepy==1.0.3, numpy<2
 pip install -r requirements.txt
 ```
 
@@ -68,6 +80,8 @@ Our MVSplat uses the same training datasets as pixelSplat. Below we quote pixelS
 
 ## Running the Code
 
+[here](https://drive.google.com/drive/folders/1joiezNCyQK2BvWMnfwHJpm2V77c7iYGe?usp=sharing) 에서 필요한 dataset 다운받아 경로 설정함. *DTU가 아닌 이 dataset을 사용하여 evaluation 진행*
+
 ### Evaluation
 
 To render novel views and compute evaluation metrics from a pretrained model,
@@ -77,14 +91,14 @@ To render novel views and compute evaluation metrics from a pretrained model,
 * run the following:
 
 ```bash
-# re10k
+# re10k (test on 25.08.11)
 python -m src.main +experiment=re10k \
 checkpointing.load=checkpoints/re10k.ckpt \
 mode=test \
 dataset/view_sampler=evaluation \
 test.compute_scores=true
 
-# acid
+# acid (test on 25.08.11)
 python -m src.main +experiment=acid \
 checkpointing.load=checkpoints/acid.ckpt \
 mode=test \
@@ -98,7 +112,7 @@ test.compute_scores=true
 To render videos from a pretrained model, run the following
 
 ```bash
-# re10k
+# re10k (영상 결과도 잘 출력됨 - 25.08.11)
 python -m src.main +experiment=re10k \
 checkpointing.load=checkpoints/re10k.ckpt \
 mode=test \
@@ -107,6 +121,17 @@ dataset.view_sampler.index_path=assets/evaluation_index_re10k_video.json \
 test.save_video=true \
 test.save_image=false \
 test.compute_scores=false
+```
+
+**Generate point_cloud_figure_mvsplat (.ply 형식으로 결과 출력해보기)**
+- ``./point_clous/ply_dump`` 경로 생성 후 실행
+```bash
+export WANDB_MODE=offline
+export WANDB_CONSOLE=off
+CUDA_VISIBLE_DEVICES=0 HYDRA_FULL_ERROR=1 \
+python -m src.paper.generate_point_cloud_figure_mvsplat \
+  +experiment=re10k checkpointing.load=checkpoints/re10k.ckpt \
+  wandb.name=ply_dump mode=test dataset/view_sampler=evaluation
 ```
 
 ### Training
@@ -194,18 +219,3 @@ test.compute_scores=true
 ```
 
 **More running commands can be found at [more_commands.sh](more_commands.sh).**
-
-## BibTeX
-
-```bibtex
-@article{chen2024mvsplat,
-    title   = {MVSplat: Efficient 3D Gaussian Splatting from Sparse Multi-View Images},
-    author  = {Chen, Yuedong and Xu, Haofei and Zheng, Chuanxia and Zhuang, Bohan and Pollefeys, Marc and Geiger, Andreas and Cham, Tat-Jen and Cai, Jianfei},
-    journal = {arXiv preprint arXiv:2403.14627},
-    year    = {2024},
-}
-```
-
-## Acknowledgements
-
-The project is largely based on [pixelSplat](https://github.com/dcharatan/pixelsplat) and has incorporated numerous code snippets from [UniMatch](https://github.com/autonomousvision/unimatch). Many thanks to these two projects for their excellent contributions!
