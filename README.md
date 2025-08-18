@@ -219,3 +219,23 @@ test.compute_scores=true
 ```
 
 **More running commands can be found at [more_commands.sh](more_commands.sh).**
+
+**DeepDeblurRF를 위한 cozyroom test**
+```bash
+python -m src.scripts.convert_cozyroom \
+    --input_dir datasets/cozyroom/rf/rf_0 \
+    --output_dir datasets/cozyroom_processed
+```
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python -m src.main +experiment=cozyroom \
+    checkpointing.load=checkpoints/re10k.ckpt \
+    mode=test \
+    test.compute_scores=true
+
+python -m src.main +experiment=cozyroom \
+    checkpointing.load=checkpoints/re10k.ckpt \
+    mode=test \
+    test.compute_scores=true \
+    data_loader.test.num_workers=0
+```
