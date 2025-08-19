@@ -7,7 +7,7 @@ defaults:
 
 wandb:
   name: cozyroom
-  tags: [cozyroom, 256x256]
+  tags: [cozyroom, 600x400, 29_deblurred]
 
 data_loader:
   train:
@@ -33,14 +33,6 @@ loss:
   lpips:
     apply_after_step: 0
     weight: 0.05
-
-dataset: 
-  image_shape: [256, 256]
-  roots: [datasets/cozyroom_processed]
-  near: 1.
-  far: 100.
-  baseline_scale_bounds: false
-  make_baseline_1: false
 
 test:
   eval_time_skip_steps: 5

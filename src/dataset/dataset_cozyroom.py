@@ -1,5 +1,3 @@
-# src/dataset/dataset_cozyroom.py (수정 완료)
-
 import json
 from dataclasses import dataclass
 from functools import cached_property
@@ -85,9 +83,6 @@ class DatasetCozyroom(IterableDataset):
         return [lst[x] for x in indices]
 
     def __iter__(self):
-        # DEBUG: 1. 메서드 진입 확인
-        print("DEBUG: 1. __iter__ 메서드 진입 성공.")
-
         if self.stage in (("train", "val") if self.cfg.shuffle_val else ("train")):
             self.chunks = self.shuffle(self.chunks)
 
@@ -99,14 +94,8 @@ class DatasetCozyroom(IterableDataset):
                 if chunk_index % worker_info.num_workers == worker_info.id
             ]
 
-        # DEBUG: 2. 청크 루프 시작 확인
-        print(f"DEBUG: 2. 총 {len(self.chunks)}개의 청크 파일 처리를 시작합니다.")
-
         for chunk_path in self.chunks:
-            # DEBUG: 3. 청크 파일 로딩 확인
-            print(f"DEBUG: 3. 청크 파일 로딩 시도: {chunk_path}")
             chunk = torch.load(chunk_path)
-            print(f"DEBUG: 3. 청크 파일 로딩 성공.")
 
             if self.cfg.overfit_to_scene is not None:
                 item = [x for x in chunk if x["key"] == self.cfg.overfit_to_scene]
@@ -118,9 +107,6 @@ class DatasetCozyroom(IterableDataset):
 
             times_per_scene = self.cfg.test_times_per_scene
             num_runs = int(times_per_scene * len(chunk))
-            
-            # DEBUG: 4. Scene/Example 루프 시작 확인
-            print(f"DEBUG: 4. 청크 내 {len(chunk)}개 Scene에 대해 총 {num_runs}번 루프를 시작합니다.")
 
             for run_idx in range(num_runs):
                 example = chunk[run_idx // times_per_scene]
@@ -129,15 +115,13 @@ class DatasetCozyroom(IterableDataset):
                 scene = example["key"]
 
                 try:
-                    # DEBUG: 5. View Sampler 호출 직전 확인 (가장 유력한 용의자)
-                    print(f"DEBUG: 5. 루프 {run_idx+1}/{num_runs} - view_sampler.sample 호출 직전...")
+                    if hasattr(self.view_sampler, "step_tracker") and (self.view_sampler.step_tracker is not None):
+                        self.view_sampler.step_tracker.step = run_idx
                     context_indices, target_indices = self.view_sampler.sample(
                         scene,
                         extrinsics,
                         intrinsics,
                     )
-                    # DEBUG: 6. View Sampler 반환 성공 확인
-                    print(f"DEBUG: 6. 루프 {run_idx+1}/{num_runs} - view_sampler.sample 반환 성공.")
                 except ValueError:
                     continue
 
@@ -148,33 +132,20 @@ class DatasetCozyroom(IterableDataset):
                     example["images"][index.item()] for index in context_indices
                 ]
                 
-                # DEBUG: 7. 이미지 변환 직전 확인
-                print(f"DEBUG: 7. 루프 {run_idx+1}/{num_runs} - context 이미지 변환 시작...")
                 context_images = self.convert_images(context_images)
-                print(f"DEBUG: 7. 루프 {run_idx+1}/{num_runs} - context 이미지 변환 완료.")
 
                 target_images = [
                     example["images"][index.item()] for index in target_indices
                 ]
 
-                print(f"DEBUG: 7. 루프 {run_idx+1}/{num_runs} - target 이미지 변환 시작...")
                 target_images = self.convert_images(target_images)
-                print(f"DEBUG: 7. 루프 {run_idx+1}/{num_runs} - target 이미지 변환 완료.")
 
-                # ################# BUG FIX #################
-                # 하드코딩된 이미지 크기 대신 config 파일의 image_shape 사용
                 h, w = self.cfg.image_shape
                 expected_shape = (3, h, w)
                 context_image_invalid = context_images.shape[2:] != (h, w)
                 target_image_invalid = target_images.shape[2:] != (h, w)
-                # ###########################################
 
                 if self.cfg.skip_bad_shape and (context_image_invalid or target_image_invalid):
-                    print(
-                        f"Skipped bad example {example['key']}. Context shape was "
-                        f"{context_images.shape} and target shape was "
-                        f"{target_images.shape}. Expected (B, 3, H, W) with H={h}, W={w}"
-                    )
                     continue
 
                 context_extrinsics = extrinsics[context_indices]
@@ -188,9 +159,6 @@ class DatasetCozyroom(IterableDataset):
                     scale = 1
 
                 nf_scale = scale if self.cfg.baseline_scale_bounds else 1.0
-                
-                # DEBUG: 8. 최종 데이터 생성 및 yield 직전 확인
-                print(f"DEBUG: 8. 루프 {run_idx+1}/{num_runs} - 최종 데이터 생성 완료. yield 직전.")
 
                 example = {
                     "context": {

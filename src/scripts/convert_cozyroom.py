@@ -78,7 +78,7 @@ if __name__ == "__main__":
     print(f"Saved 29 deblurred images to {test_dir / '000000.torch'}")
 
     # index.json에는 평가 대상인 Deblurred 이미지(29개)의 키만 저장
-    test_index = {f"cozyroom_view_{i:03d}": "000000.torch" for i in deblurred_ids}
+    test_index = {"cozyroom_scene": "000000.torch"}
     with (test_dir / "index.json").open("w") as f:
         json.dump(test_index, f)
     print(f"Saved test index with {len(test_index)} keys.")

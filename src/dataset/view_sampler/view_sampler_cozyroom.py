@@ -35,37 +35,36 @@ class ViewSamplerCozyroom(ViewSampler[ViewSamplerCozyroomCfg]):
         extrinsics: Float[Tensor, "view 4 4"],
         intrinsics: Float[Tensor, "view 3 3"],
         device: torch.device = torch.device("cpu"),
-    ) -> tuple[
-        Int64[Tensor, " context_view"],
-        Int64[Tensor, " target_view"],
-    ]:
-        num_total_views = 34
-        deblurred_indices = [i for i in range(num_total_views) if i % 8 != 0]
+    ) -> tuple[Int64[Tensor, " context_view"], Int64[Tensor, " target_view"]]:
+        # ---- 디버깅: 진입 로그 ----
+        N = int(extrinsics.shape[0])
+        # print(f"[SAMPLE enter] scene={scene} N={N}", flush=True)
 
-        try:
-            target_idx_original = int(scene.split("_")[-1])
-        except (ValueError, IndexError):
-            raise ValueError(f"Scene name '{scene}' is not in the expected format 'cozyroom_view_###'")
+        if N < 2:
+            raise ValueError("Not enough views")
+        if N == 2:
+            # 폴백: 1장을 컨텍스트, 1장을 타깃
+            ctx = torch.tensor([0], dtype=torch.int64, device=device)
+            tgt = torch.tensor([1], dtype=torch.int64, device=device)
+            print(f"[SAMPLE fallback-2] ctx={ctx.tolist()} tgt={tgt.tolist()}", flush=True)
+            return ctx, tgt
 
-        try:
-            # .torch 파일 내의 인덱스 (0~28)
-            target_idx_in_chunk = deblurred_indices.index(target_idx_original)
-        except ValueError:
-            raise ValueError(f"Target index {target_idx_original} not found in deblurred list.")
-
-        # 인접 뷰 선택 (리스트 인덱스 기준)
-        if target_idx_in_chunk == 0:
-            context_indices_in_chunk = [1, 2]
-        elif target_idx_in_chunk == len(deblurred_indices) - 1:
-            context_indices_in_chunk = [target_idx_in_chunk - 2, target_idx_in_chunk - 1]
+        # 타깃 선택 규칙:
+        # - test에서 한 번만 뽑는다면 가운데 프레임을 타깃으로(안전)
+        # - 여러 번 뽑고 싶으면 step 기반으로 순환
+        if self.step_tracker is not None:
+            step = int(self.step_tracker.step)
+            # 1..N-2 범위에서 순환 (양 옆 이웃 확보용)
+            t = (step % (N - 2)) + 1
         else:
-            context_indices_in_chunk = [target_idx_in_chunk - 1, target_idx_in_chunk + 1]
+            t = N // 2  # 가운데
 
-        # 3. 텐서를 생성할 때 device를 명시해줌
-        return (
-            torch.tensor(context_indices_in_chunk, dtype=torch.int64, device=device),
-            torch.tensor([target_idx_in_chunk], dtype=torch.int64, device=device),
-        )
+        ctx_idx = [t - 1, t + 1]
+        ctx = torch.tensor(ctx_idx, dtype=torch.int64, device=device)
+        tgt = torch.tensor([t], dtype=torch.int64, device=device)
+
+        # print(f"[SAMPLE ok] t={t} ctx={ctx.tolist()} tgt={tgt.tolist()}", flush=True)
+        return ctx, tgt
 
     @property
     def num_context_views(self) -> int:

@@ -234,8 +234,16 @@ CUDA_VISIBLE_DEVICES=0 python -m src.main +experiment=cozyroom \
     test.compute_scores=true
 
 python -m src.main +experiment=cozyroom \
-    checkpointing.load=checkpoints/re10k.ckpt \
-    mode=test \
-    test.compute_scores=true \
-    data_loader.test.num_workers=0
+  mode=test \
+  checkpointing.load=checkpoints/re10k.ckpt \
+  test.compute_scores=true
+
+# 08.19 debugging start (DDP 끄고 실행)
+export CUDA_VISIBLE_DEVICES=0
+python -m src.main +experiment=cozyroom \
+  mode=test \
+  checkpointing.load=checkpoints/re10k.ckpt \
+  test.compute_scores=true \
+  data_loader.test.num_workers=0
+
 ```
